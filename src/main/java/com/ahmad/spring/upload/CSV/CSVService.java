@@ -31,7 +31,7 @@ public class CSVService {
 //    return in;
 //  }
 
-  public List<Game> getAllGames() {
-    return repository.findAll();
-  }
+//  public List<Game> getAllGames() {
+//    return repository.findAll();
+//  }
 }

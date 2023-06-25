@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ahmad.spring.upload.DTO.ResponseMessage;
 import com.ahmad.spring.upload.game.Game;
+import com.ahmad.spring.upload.game.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ public class CSVController {
 
   @Autowired
   CSVService fileService;
-
+  @Autowired
+  GameService gameService;
   @PostMapping("/upload")
   public ResponseEntity<ResponseMessage> uploadFile(@RequestBody MultipartFile file) {
     String message = "";
@@ -40,9 +42,11 @@ public class CSVController {
   }
 
   @GetMapping("/games")
-  public ResponseEntity<List<Game>> getAllGames() {
+  public ResponseEntity<List<Game>> getAllGames(
+          @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo
+  ) {
     try {
-      List<Game> games = fileService.getAllGames();
+      List<Game> games = gameService.getAllGames(pageNo);
 
       if ( games.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
