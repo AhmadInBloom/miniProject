@@ -20,10 +20,17 @@ public class UserServiceImp implements UserService{
 
     @Override
     public ResponseEntity<?> addUser(User user) {
-        user.setPassword( passwordEncoder.encode( user.getPassword() ) );
-        userInfoRepository.save( user );
-        return ResponseEntity.status( HttpStatus.CREATED )
-                .body( new MessageResponse( "new user created" ) );
+        if ( userInfoRepository.findByUsername( user.getUsername() ).isPresent() ) {
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST).body( "user already created" );
+
+        }
+        else {
+            user.setPassword( passwordEncoder.encode( user.getPassword() ) );
+            userInfoRepository.save( user );
+            return ResponseEntity.status( HttpStatus.CREATED )
+                    .body( new MessageResponse( "new user created" ) );
+        }
+
     }
 
     @Override

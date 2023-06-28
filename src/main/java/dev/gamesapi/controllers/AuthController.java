@@ -1,7 +1,9 @@
-package dev.gamesapi.user;
+package dev.gamesapi.controllers;
 
 import dev.gamesapi.DTOs.AuthRequest;
 import dev.gamesapi.security.JwtService;
+import dev.gamesapi.user.User;
+import dev.gamesapi.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-@RequestMapping("/admin")
-public class AdminController{
+@RequestMapping("/auth/")
+public class AuthController{
 
     @Autowired
     private UserService service;
@@ -25,20 +28,22 @@ public class AdminController{
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
-    @PostMapping("/register")
+    @PostMapping("login")
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        return getStringResponseEntity( authRequest, authenticationManager, jwtService );
+    }
+    @PostMapping("user/register")
     public ResponseEntity<?> addNewUser(@RequestBody User user) {
-        user.setRoles( "ADMIN" );
+        user.setRoles( "USER" );
         return service.addUser( user );
     }
 
 
 
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        return getStringResponseEntity( authRequest, authenticationManager, jwtService );
-
-
+    @PostMapping("admin/register")
+    public ResponseEntity<?> addNewAdmin(@RequestBody User user) {
+        user.setRoles( "ADMIN" );
+        return service.addUser( user );
     }
 
     static ResponseEntity<String> getStringResponseEntity(@RequestBody AuthRequest authRequest, AuthenticationManager authenticationManager, JwtService jwtService) {
@@ -51,5 +56,5 @@ public class AdminController{
         } else {
             return ResponseEntity.status( HttpStatus.UNAUTHORIZED).body( "wrong info" );
         }
-    }
+}
 }
