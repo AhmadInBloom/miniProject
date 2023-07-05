@@ -1,10 +1,13 @@
 package dev.gamesapi.user;
 
 
+import dev.gamesapi.game.UserGame;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Entity
 @Data
@@ -23,4 +26,7 @@ public class User{
     private String password;
     @Column( nullable = false )
     private String roles;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserGame> Status;
 }
